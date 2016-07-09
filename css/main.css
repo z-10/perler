@@ -1,0 +1,21 @@
+.outer {
+  width: 17px;
+  height: 17px;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+}
+
+.small-circle {
+  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  background-color: black
+}
+
+.editor-cell {
+  border : 1px solid black;
+}
