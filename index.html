@@ -6,25 +6,31 @@
 
 
     <script src="lib/angular.min.js"></script>
-    <script src="lib/xml2json.min.js"></script>
 
+    <script src="lib/palette.js"></script>
+    <script src="lib/helpers.js"></script>
     <script src="PerlerApp.js"></script>
     <script src="managers/BeadManager.js"></script>
+    <script src="managers/ImageManager.js"></script>
     <script src="controllers/GridController.js"></script>
   </head>
   <body>
     <div id="grid-container" ng-controller="GridController">
       <table>
         <tr ng-repeat="row in data">
-          <td class="editor-cell" 
+          <td class="editor-cell"
               ng-repeat="col in row track by $index"
-              ng-class="{circle : isSet($parent.$index, $index), 'outer': !isSet($parent.$index, $index)}"
-              ng-style="{'background-color': isSet($parent.$index, $index) ? getColor($parent.$index, $index) : '#FFFFFF'}"
-              ng-click="setColor($parent.$index, $index)"
+              ng-class="{circle : isSet($index, $parent.$index), 'outer': !isSet($index, $parent.$index)}"
+              ng-style="{'background-color': isSet($index, $parent.$index) ? getColor($index, $parent.$index) : '#FFFFFF'}"
+              ng-click="setColor($index, $parent.$index)"
+              title="{{getName($index, $parent.$index)}}"
               >
           </td>
         </tr>
       </table>
+      <form>
+        <input type="file" ng-file-select="onFileSelect($files)" >
+      </form>
     </div>
   </body>
 </html>
