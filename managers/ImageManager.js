@@ -1,27 +1,38 @@
-app.factory('ImageManager', ['$q', function($q) {
+app.factory('ImageManager', ['$q', 'ImageModel', function($q, ImageModel) {
   var ImageManager = {
     canvas: document.createElement('canvas'),
     img : document.createElement("img"),
-    load : function(image){
-      this.img.src = image;
-      this.canvas.width = this.img.width;
-      this.canvas.height = this.img.height;
-      this.canvas.getContext('2d').drawImage(this.img, 0, 0, this.img.width, this.img.height);
-    },
-    getPixel : function(x,y){
-      if(!this.canvas){
-        return [0,0,0,0];
-      }
-      return this.canvas.getContext('2d').getImageData(x, y, 1, 1).data;
-    },
-    getWidth : function(){
-      return this.canvas ? this.canvas.width : 0;
-    },
+    load : function(file, scope){
+      var that = this,
+          deferred = $q.defer(),
+          onLoad = function(reader, deferred, scope){
+            return function () {
+              var image = reader.result;
+              that.img.src = image;
+              that.canvas.width = that.img.width;
+              that.canvas.height = that.img.height;
+              that.canvas.getContext('2d').drawImage(that.img, 0,0);
+              ImageModel.load(that.canvas);
+              ImageModel.reIndex();
+              scope.$apply(function () {
+                deferred.resolve(true);
+              });
+            };
+        },
+        onError = function(reader, deferred, scope){
+          return function () {
+            scope.$apply(function () {
+              deferred.reject(reader.error);
+            });
+          }
+        },
+        reader = new FileReader();
+        reader.onload = onLoad(reader, deferred, scope);
+        reader.onerror = onError(reader, deferred, scope);
+        reader.readAsDataURL(file);
 
-    getHeight : function(){
-      return this.canvas ? this.canvas.height : 0;
-    }
-
+        return deferred.promise;
+    },
   }
   return ImageManager;
 }]);

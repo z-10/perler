@@ -24,7 +24,8 @@ function processRow(sheet, rowId, result) {
         special : cells[19].value,
         type : cells[20].value,
         hex : "#" + color.as('hex'),
-        lab : color.as('CIELAB')
+        lab : color.as('CIELAB'),
+        enabled : true
       };
       result.push(c);
       console.log(rowId + " : " + JSON.stringify(c));
@@ -52,8 +53,8 @@ doc.getInfo(function(err, info) {
       }.bind(null,sheet,i));
     };
     pChain.then(function(result){
-      var s = "(function(window){window.GLOBAL_PALETTE = " + JSON.stringify(result) +';})(window);'
-      fs.writeFileSync('palette.js',s);
+      var s = JSON.stringify(result);
+      fs.writeFileSync('palette.json',s);
     }).catch(function(err){
       console.log("Error : " + err);
     })
